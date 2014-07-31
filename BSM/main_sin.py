@@ -27,6 +27,7 @@ import numpy as np
 from profitAndLoss import *
 from positions import createPositions
 from BSManalysis import *
+from NUGanalysis import *
 
 
 def processInstrument(optionMeta, pricedData):
@@ -93,7 +94,8 @@ def main():
 				#profit = computeNakedProfit(pricedData, (1, len(pricedData)-1))
 				#print 'profit', profit
 				BSMdata = computeBSMValues(optionMeta,pricedData)
-				print "BSM", BSMdata
+                       NonUniGridData = computeDiffeqnValues(optionMeta, pricedData, positionIndex)
+				print "BSM", BSMdata, "Non Uniform Grids", NonUniGridData,
 
 	        if raw_input("Press 'q' and then enter to quit, or enter to continue\n").lower() == 'q':
 			return
