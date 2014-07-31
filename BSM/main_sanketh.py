@@ -6,7 +6,7 @@ import fnmatch
 import tick_pb2 as proto
 import varint
 import csv
-
+import main_sin *
 
 
 def getInstrumentIterator(pricedFile, instrumentFilter=None):
