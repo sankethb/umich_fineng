@@ -117,8 +117,8 @@ def processPosition(optionMeta, pricedData, positionIndex):
                     optionTick_t0 = pricedRecord_t0.pairedTick.optionTick
                     optionTick_t1 = pricedRecord_t1.pairedTick.optionTick
 
-                    underlyingLastDiff = (underlyingTick_t1.last - underlyingTick_t0.last)
-                    optionLastDiff = (optionTick_t1.last - optionTick_t0.last)
+                    underlyingLastDiff = ((underlyingTick_t1.ask + underlyingTick_t1.bid)/2 - (underlyingTick_t0.ask + underlyingTick_t0.bid)/2)
+                    optionLastDiff = ((optionTick_t1.ask + optionTick_t1.bid)/2 - (optionTick_t0.ask + optionTick_t0.bid)/2)
 
                     if underlyingLastDiff == 0 or optionLastDiff == 0:
                         print 'Skipping delta calculation at index (%d,%d), due to no change in quotes' % (p, p + 1)
@@ -149,12 +149,12 @@ def processPosition(optionMeta, pricedData, positionIndex):
                         optionTick_t1 = pricedRecord_t1.pairedTick.optionTick
                         optionTick_t2 = pricedRecord_t2.pairedTick.optionTick
 
-                        a = underlyingTick_t2.last - underlyingTick_t1.last
-                        b = underlyingTick_t2.last - underlyingTick_t0.last
+                        a = ((underlyingTick_t2.ask + underlyingTick_t2.bid)/2 - (underlyingTick_t1.ask + underlyingTick_t1.bid)/2)
+                        b = ((underlyingTick_t2.ask + underlyingTick_t2.bid)/2 - (underlyingTick_t0.ask + underlyingTick_t0.bid)/2)
                         
                                              
                         denominator = (a*b*(b-a))
-                        numerator = (pow(a,2)*optionTick_t0.last - pow(b,2)*optionTick_t1.last + (pow(b,2) - pow(a,2))*optionTick_t2.last)
+                        numerator = (pow(a,2)*(optionTick_t0.ask + optionTick_t0.bid)/2 - pow(b,2)*(optionTick_t1.ask + optionTick_t1.bid)/2 + (pow(b,2) - pow(a,2))*(optionTick_t2.ask + optionTick_t2.bid)/2)
 
                         if numerator == 0 or denominator == 0:
                             print 'Skipping delta calculation at index (%d,%d), due to no change in quotes' % (p, p + 1)
@@ -162,7 +162,7 @@ def processPosition(optionMeta, pricedData, positionIndex):
                        
                         observedDelta = numerator/denominator
                                                 
-                        observedGamma = ((-a*optionTick_t0.last + b*optionTick_t1.last - (b-a)*optionTick_t2.last)*-2)/denominator
+                        observedGamma = ((-a*(optionTick_t0.ask + optionTick_t0.bid)/2 + b*(underlyingTick_t1.ask + underlyingTick_t1.bid)/2 - (b-a)*(optionTick_t2.ask + optionTick_t2.bid)/2)*-2)/denominator
                         underlyingPrice = pricedRecord_t2.pairedTick.underlyingTick.last
                         callPrice = pricedRecord_t2.pairedTick.optionTick.last
                         interestRate = pricedRecord_t2.pairedTick.interestRate 
